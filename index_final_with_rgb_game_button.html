@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Payment Rulz4you</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: url('https://files.catbox.moe/uxmb3n.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+      padding: 50px 20px;
+      position: relative;
+    }
+
+    canvas#particles, canvas#snow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .shine {
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+      transform: rotate(45deg);
+      animation: shine 4s infinite linear;
+      z-index: 0;
+    }
+
+    @keyframes shine {
+      0% { transform: translate(-100%, -100%) rotate(45deg); }
+      100% { transform: translate(100%, 100%) rotate(45deg); }
+    }
+
+    .welcome-message {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+      z-index: 9999;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      animation: fadeInDown 1s ease-in-out;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #cbd5e1;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    .qr img {
+      width: 220px;
+      border-radius: 12px;
+      margin: 30px auto;
+      transition: transform 0.3s ease;
+    }
+
+    .qr:hover img { transform: scale(1.08); }
+
+    .collapsible-container {
+      max-width: 500px;
+      margin: 30px auto;
+      background-color: rgba(30, 41, 59, 0.8);
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .collapsible {
+      background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffff);
+      background-size: 200% 200%;
+      animation: gradientBtn 3s ease infinite;
+      color: white;
+      cursor: pointer;
+      padding: 14px;
+      width: 100%;
+      border: none;
+      font-size: 1.1em;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .content {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      color: #cbd5e1;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      gap: 12px;
+    }
+
+    .btn-link {
+      padding: 14px 24px;
+      background: linear-gradient(45deg, #ff6ec4, #7873f5, #1fd1f9);
+      background-size: 200% 200%;
+      animation: gradientBtn 4s ease infinite;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn-link:hover { transform: scale(1.08); }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gradientBtn {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass-box {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+.glass-bg {
+  background: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
+              url('https://files.catbox.moe/uxmb3n.jpg') no-repeat center center fixed;
+  background-size: cover;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 1.5s ease-out forwards;
+}
+#welcome-message h1,
+#welcome-message p,
+#welcome-message button {
+  opacity: 0;
+  animation: fadeInUp 1.5s ease-out forwards;
+}
+
+#welcome-message h1 {
+  animation-delay: 0.3s;
+}
+#welcome-message p {
+  animation-delay: 0.6s;
+}
+#welcome-message button {
+  animation-delay: 0.9s;
+}
+
+
+.dark-mode {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .collapsible-container {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .btn-link {
+  background: linear-gradient(45deg, #444, #888);
+}
+
+  
+.dark-toggle-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 9999;
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.dark-toggle-btn:hover {
+  background: #666;
+}
+
+.btn-link {
+  background: linear-gradient(45deg, #3ea6ff, #00c6ff, #00e5ff);
+  background-size: 200% 200%;
+  animation: glowBtn 4s ease infinite;
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+  padding: 14px 24px;
+  transition: 0.3s;
+  display: inline-block;
+}
+
+.btn-link:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px #00e5ff;
+}
+
+@keyframes glowBtn {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Neon blue button styling */
+button, .btn, .btn-link, input[type="button"], input[type="submit"] {
+    background-color: #00f0ff !important;
+    color: black !important;
+    border: none !important;
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+    transition: all 0.3s ease;
+}
+
+button:hover, .btn:hover, .btn-link:hover, input[type="button"]:hover, input[type="submit"]:hover {
+    box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+    filter: brightness(1.2);
+}
+
+.glow-qr {
+  border: 3px solid #00f0ff;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+  }
+  50% {
+    box-shadow: 0 0 25px #00f0ff, 0 0 40px #00f0ff;
+  }
+  100% {
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+  }
+}
+
+#loading-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  color: #00f0ff;
+  font-family: 'Segoe UI', sans-serif;
+  transition: opacity 0.8s ease;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(0, 255, 255, 0.3);
+  border-top: 6px solid #00f0ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.loading-text .dots::after {
+  content: '';
+  display: inline-block;
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+.dark-mode.glass-bg {
+  background: #121212 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-image: none !important;
+  transition: background 0.5s ease;
+}
+
+.pay-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px auto;
+  width: 90%;
+  box-shadow: 0 0 15px #00f0ff66;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.copy-btn {
+  background: #00f0ff;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00f0ff;
+  transition: 0.3s;
+}
+.copy-btn:hover {
+  transform: scale(1.05);
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeSlideUp 1s ease forwards;
+}
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 240, 255, 0.2);
+  border-top: 5px solid #00f0ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.social-menu a {
+  animation: pulseButton 2s infinite;
+}
+
+@keyframes pulseButton {
+  0% { transform: scale(1); box-shadow: 0 0 10px #00f0ff; }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px #00f0ff; }
+  100% { transform: scale(1); box-shadow: 0 0 10px #00f0ff; }
+}
+
+.game-rgb-button {
+  position: relative;
+  display: inline-block;
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  background: transparent;
+  border: 2px solid #00f0ff;
+  border-radius: 12px;
+  text-transform: uppercase;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  box-shadow: 0 0 20px #00f0ff;
+  transition: all 0.3s ease;
+}
+
+.game-rgb-button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, #ff00cc, #00ffff, #00f0ff, #ff00cc);
+  background-size: 300% 300%;
+  animation: rgb-flow 4s linear infinite;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+@keyframes rgb-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.game-rgb-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px #00f0ff, 0 0 45px #00f0ff;
+}
+</style>
+</head>
+<body class="glass-bg dark-mode">
+<nav id="menu-nav">
+<a href="#welcome-message">Beranda</a>
+<a href="#main-content">Pembayaran</a>
+<a href="#promo-countdown">Promo</a>
+<a href="#floatingWA">Kontak</a>
+</nav>
+<div class="social-menu glass-box fade-in-up" style="margin-top:80px; text-align:center;">
+<h2 style="margin-bottom: 15px;">🌐 Sosial Media Kami</h2>
+<div style="display:flex; justify-content:center; flex-wrap:wrap; gap:12px;">
+<a class="btn-link" game-rgb-button="" href="https://youtube.com/@channelmu" target="_blank">YouTube</a>
+<a class="btn-link" game-rgb-button="" href="https://tiktok.com/@channelmu" target="_blank">TikTok</a>
+<a class="btn-link" game-rgb-button="" href="https://instagram.com/channelmu" target="_blank">Instagram</a>
+<a class="btn-link" game-rgb-button="" href="https://t.me/channelmu" target="_blank">Telegram</a>
+<a class="btn-link" game-rgb-button="" href="https://discord.gg/linkmu" target="_blank">Discord</a>
+</div>
+</div>
+<style>
+  #menu-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #0a0a0a;
+    padding: 12px 0;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 0 10px #00f0ff;
+  }
+  #menu-nav a {
+    color: #00f0ff;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family: 'Outfit', sans-serif;
+    transition: color 0.3s ease;
+  }
+  #menu-nav a:hover {
+    color: #ffffff;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+<div id="custom-loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95); display: flex; justify-content: center; align-items: center; z-index: 99999;">
+<div style="text-align: center;">
+<div class="spinner"></div>
+<p style="color: #00f0ff; margin-top: 20px; font-size: 1.2rem; font-family: sans-serif;">Memuat...</p>
+</div>
+</div>
+<audio id="clickSound" preload="auto" src="https://files.catbox.moe/m051mg.mp3"></audio>
+<div id="loading-screen">
+<div class="spinner"></div>
+<div class="loading-text">Loading<span class="dots">...</span></div>
+</div>
+<div class="shine"></div>
+<!-- Welcome Animation -->
+<div class="welcome-message glass-box fade-in-up" id="welcome-message">
+<h1 id="typing-text"></h1>
+<p>Selamat Datang Di Payment rulz</p>
+<p>Mimpi besar dimulai dari langkah kecil</p>
+<button class="btn-link" game-rgb-button="" id="go-to-payment">go to payment</button>
+<div class="battery-card" style="margin: 30px auto 10px; width: 90%; max-width: 600px; background-color: white; border-radius: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; display: flex; align-items: center; gap: 16px; color: black;">
+<img src="https://img.icons8.com/emoji/48/000000/battery-emoji.png" style="width: 28px; height: 28px;"/>
+<div style="flex: 1;">
+<h3 style="margin: 0; font-size: 1.5rem;">Battery Status</h3>
+<p id="battery-card-level" style="margin: 4px 0 0; font-size: 1.2rem; font-weight: bold;">Checking...</p>
+</div>
+</div>
+<script>
+navigator.getBattery().then(function(battery) {
+  function updateBatteryStatus() {
+    document.getElementById("battery-card-level").innerText = Math.round(battery.level * 100) + "%";
+  }
+  updateBatteryStatus();
+  battery.addEventListener('levelchange', updateBatteryStatus);
+});
+</script>
+</div>
+<audio id="clickSound" src="https://files.catbox.moe/m051mg.mp3"></audio>
+<!-- Konten Utama -->
+<div id="promo-countdown" style="display:none; background: #062a31; padding: 12px 16px; text-align: center;
+  font-size: 1.1rem; font-weight: bold; color: #00f0ff; font-family: sans-serif;">
+<span id="promo-name">Promo Jasa Pembuatan Web Payment </span> berakhir dalam: <span id="countdown-timer">--:--:--</span>
+</div>
+<div id="main-content" style="display: none;">
+<h1 class="fade-in">Payment Methods</h1>
+<p class="fade-in">Silakan Pilih Salah Satu Metode Pembayaran Di Bawah Ini</p>
+<!-- STATUS BATERAI -->
+<div class="fade-in" id="battery-status" style="margin-top: 20px; font-size: 1.1em; color: #aeefff;">
+  Status Baterai: <span id="battery-level">Memuat...</span> - 
+  <span id="charging-status">Memuat...</span>
+</div>
+<div class="qr fade-in" onclick="zoomQR()">
+<img alt="QR Code Pembayaran" class="glow-qr" src="https://files.catbox.moe/mzmmzt.jpeg"/>
+</div>
+<p class="subtitle fade-in">Scan kode QR di atas dengan aplikasi pembayaran Anda SS BUKTI PEMBAYARAN</p>
+<div class="collapsible-container fade-in" game-rgb-button="">
+<button class="collapsible" game-rgb-button="" style="background-color:#00f0ff;color:black;font-weight:bold;box-shadow:0 0 12px #00f0ff, 0 0 25px #00f0ff;">E-WALLET</button>
+<div class="content" style="background-color:rgba(0, 240, 255, 0.15);border-left:4px solid #00f0ff;padding:10px 16px;border-radius:0 0 12px 12px;box-shadow:0 0 10px #00f0ff;">
+<p>DANA: 088975448402</p>
+<p>OVO: Belum tersedia</p>
+<p>GOPAY: 088210663469</p>
+</div>
+<button class="collapsible" game-rgb-button="">TRANSFER BANK</button>
+<div class="content">
+<p>BCA: Tidak tersedia</p>
+<p>MANDIRI: Tidak tersedia</p>
+</div>
+</div>
+<div class="btn-group fade-in">
+<a class="btn-link fade-in" game-rgb-button="" href="https://chat.whatsapp.com/Dr17FSA5UEw51kg1dp7Inq" target="_blank">group whatsapp</a>
+<a class="btn-link fade-in" game-rgb-button="" href="index.html">Back</a>
+<a class="btn-link fade-in" game-rgb-button="" href="https://whatsapp.com/channel/0029Vb65xW85kg76LzrHgi3f" target="_blank">Channel Rulz4you</a>
+</div>
+</div>
+<div class="overlay" id="qrOverlay" onclick="closeZoom()">
+<canvas id="particles"></canvas>
+<canvas id="snow"></canvas>
+<script>
+  // Welcome transition
+  document.getElementById('go-to-payment').addEventListener('click', function () {
+    document.getElementById('welcome-message').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  });
+
+  document.querySelectorAll(".collapsible").forEach(btn => {
+    btn.addEventListener("click", function () {
+      this.classList.toggle("active");
+      const content = this.nextElementSibling;
+      content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+    });
+  });
+
+  // Partikel warna-warni
+  const canvas = document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 1,
+      color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+      speedX: Math.random() * 0.5 - 0.25,
+      speedY: Math.random() * 0.5 - 0.25,
+    });
+  }
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Efek salju
+  const snowCanvas = document.getElementById("snow");
+  const snowCtx = snowCanvas.getContext("2d");
+  snowCanvas.width = window.innerWidth;
+  snowCanvas.height = window.innerHeight;
+  const snowflakes = [];
+  for (let i = 0; i < 100; i++) {
+    snowflakes.push({
+      x: Math.random() * snowCanvas.width,
+      y: Math.random() * snowCanvas.height,
+      radius: Math.random() * 3 + 3,
+      speedY: Math.random() * 1 + 2,
+      speedX: Math.random() * 0.5 - 0.50
+    });
+  }
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            const about = document.getElementById('about');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                setTimeout(() => {
+                    about.classList.add('active');
+                }, 200);
+            }, 2500);
+        });
+
+        function showPayment() {
+            const about = document.getElementById('about');
+            const payment = document.getElementById('payment');
+            about.classList.remove('active');
+            about.classList.add('hidden');
+            setTimeout(() => {
+                payment.classList.remove('hidden');
+                payment.classList.add('active');
+            }, 900);
+        }
+
+        function showAbout() {
+            const payment = document.getElementById('payment');
+            const about = document.getElementById('about');
+            payment.classList.remove('active');
+            payment.classList.add('hidden');
+            setTimeout(() => {
+                about.classList.remove('hidden');
+                about.classList.add('active');
+            }, 900);
+        }
+  function drawSnow() {
+    snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+    snowCtx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    snowflakes.forEach(flake => {
+      snowCtx.beginPath();
+      snowCtx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+      snowCtx.fill();
+      flake.y += flake.speedY;
+      flake.x += flake.speedX;
+      if (flake.y > snowCanvas.height) {
+        flake.y = -flake.radius;
+        flake.x = Math.random() * snowCanvas.width;
+      }
+    });
+    requestAnimationFrame(drawSnow);
+  }
+  drawSnow();
+  navigator.getBattery().then(function(battery) {
+  function updateBatteryStatus() {
+    document.getElementById("battery-level").textContent = Math.round(battery.level * 100) + "%";
+    document.getElementById("charging-status").textContent = battery.charging ? "Mengisi Daya" : "Tidak Mengisi";
+  }
+
+  updateBatteryStatus();
+
+  // Update jika status berubah
+  battery.addEventListener('chargingchange', updateBatteryStatus);
+  battery.addEventListener('levelchange', updateBatteryStatus);
+});
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const text = "Hey, i am Asisten DimzzPutra";
+    const typingElement = document.getElementById("typing-text");
+    let index = 0;
+
+    function type() {
+      if (index < text.length) {
+        typingElement.innerHTML += text.charAt(index);
+        index++;
+        setTimeout(type, 100);
+      }
+    }
+
+    type();
+  });
+
+  function copyText(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Nomor berhasil disalin!");
+    }).catch(err => {
+      alert("Gagal menyalin");
+    });
+  }
+
+
+
+// Dark Mode Toggle
+function toggleDarkMode_DISABLED() {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("mode", isDark ? "dark" : "light");
+}
+
+// Cek mode sebelumnya saat halaman dibuka
+if (localStorage.getItem("mode") === "dark") {
+  document.body.classList.add("dark-mode");
+}
+
+
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loading-screen');
+  loader.style.opacity = '0';
+  setTimeout(() => loader.style.display = 'none', 800);
+});
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Nomor berhasil disalin: " + text);
+  });
+}</script>
+</div>
+<footer style="text-align:center; color:#aaa; font-size:14px; margin-top:50px;">
+<p>© Powerd By KandiXd. All rights reserved.</p>
+<p>
+<a href="#" style="color:#888; text-decoration:none;">FAQ</a> |
+    <a href="#" style="color:#888; text-decoration:none;">Syarat dan Ketentuan</a> |
+    <a href="#" style="color:#888; text-decoration:none;">Kebijakan Privasi</a>
+</p>
+</footer>
+<script>
+function playClickSound() {
+  const sound = document.getElementById("clickSound");
+  if (sound) sound.play();
+}
+
+// Tambahkan event click ke semua tombol dan link
+document.addEventListener("DOMContentLoaded", function () {
+  const clickables = document.querySelectorAll("button, a");
+  clickables.forEach(el => {
+    el.addEventListener("click", playClickSound);
+  });
+});
+</script>
+<script>
+window.addEventListener("scroll", function () {
+  const btn = document.getElementById("floatingWA");
+  btn.style.top = window.scrollY + window.innerHeight - 80 + "px";
+});
+</script>
+<div id="floatingWA" style="position: absolute; bottom: 30px; left: 20px; z-index: 9999;">
+<a href="https://wa.me/6288221444002" style="display: inline-block; background: #25D366; padding: 10px; border-radius: 50%; box-shadow: 0 0 10px #25D366;" target="_blank">
+<img alt="WA" height="24" src="https://img.icons8.com/ios-filled/24/ffffff/whatsapp.png" width="24"/>
+</a>
+</div>
+<script>
+window.addEventListener("scroll", function () {
+  const btn = document.getElementById("floatingWA");
+  btn.style.top = window.scrollY + window.innerHeight - 80 + "px";
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const goBtn = document.getElementById("go-to-payment");
+  const loader = document.getElementById("custom-loading");
+  const mainContent = document.getElementById("main-content");
+  const welcome = document.getElementById("welcome-message");
+
+  if (goBtn && loader && mainContent && welcome) {
+    goBtn.addEventListener("click", function () {
+      loader.style.display = "flex";
+      setTimeout(() => {
+        loader.style.display = "none";
+        welcome.style.display = "none";
+        mainContent.style.display = "block";
+      }, 2500);
+    });
+  }
+});
+</script>
+<script>
+window.addEventListener("load", () => {
+  const loader = document.getElementById("custom-loading");
+  if (loader) {
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 2000);
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const goBtn = document.getElementById("go-to-payment");
+  const loader = document.getElementById("custom-loading");
+  const mainContent = document.getElementById("main-content");
+  const welcome = document.getElementById("welcome-message");
+
+  if (goBtn && loader && mainContent && welcome) {
+    goBtn.addEventListener("click", function () {
+      loader.style.display = "flex";
+      setTimeout(() => {
+        loader.style.display = "none";
+        welcome.style.display = "none";
+        mainContent.style.display = "block";
+      }, 2000);
+    });
+  }
+});
+</script>
+<script>
+const promoName = "Promo owner 1gb 10k beridnet sebelum pp";
+const deadline = new Date("2025-10-16T01:10:00");
+
+function updateCountdown() {
+  const now = new Date().getTime();
+  const distance = deadline.getTime() - now;
+  const timerEl = document.getElementById("countdown-timer");
+  const nameEl = document.getElementById("promo-name");
+
+  if (!timerEl || !nameEl) return;
+
+  nameEl.textContent = promoName;
+
+  if (distance <= 0) {
+    timerEl.textContent = "Promo telah berakhir!";
+    clearInterval(window.countdownInterval);
+  } else {
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    timerEl.textContent = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const goBtn = document.getElementById("go-to-payment");
+  const loader = document.getElementById("custom-loading");
+  const mainContent = document.getElementById("main-content");
+  const welcome = document.getElementById("welcome-message");
+  const promoBar = document.getElementById("promo-countdown");
+
+  if (goBtn) {
+    goBtn.addEventListener("click", function () {
+      if (loader && welcome && mainContent) {
+        loader.style.display = "flex";
+        setTimeout(() => {
+          loader.style.display = "none";
+          welcome.style.display = "none";
+          mainContent.style.display = "block";
+          if (promoBar) {
+            promoBar.style.display = "block";
+            updateCountdown();
+            window.countdownInterval = setInterval(updateCountdown, 1000);
+          }
+        }, 2000);
+      }
+    });
+  }
+});
+</script>
+<script>
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Nomor berhasil disalin: " + text);
+  }).catch(err => {
+    console.error("Gagal menyalin: ", err);
+  });
+}
+</script>
+<script>
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Nomor berhasil disalin: " + text);
+  }).catch(err => {
+    console.error("Gagal menyalin: ", err);
+  });
+}
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const rpgText = "⌈ ONLINE RPG PORTAL ⌋\n🧙 Selamat datang, pejuang digital!\n💠 Memuat dunia pembayaran ajaib...";
+    const element = document.getElementById("typing-text");
+    let i = 0;
+
+    function type() {
+      if (i < rpgText.length) {
+        if (rpgText.charAt(i) === "\n") {
+          element.innerHTML += "<br/>";
+        } else {
+          element.innerHTML += rpgText.charAt(i);
+        }
+        i++;
+        setTimeout(type, 70);
+      }
+    }
+    type();
+  });
+</script>
+<!-- Tombol Titik Tiga RGB -->
+<div id="menuPromoWrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000;">
+<button class="game-rgb-button" id="promoMenuBtn" style="font-size: 24px; padding: 10px 16px;">⋯</button>
+</div>
+<!-- Popup Menu Promosi -->
+<div id="promoPopup" style="display:none; position: fixed; bottom: 80px; right: 20px; background: rgba(0,0,0,0.9); border-radius: 16px; padding: 14px; box-shadow: 0 0 20px #00f0ff; z-index: 10000;"><div class="container">
+<h1>🎉 PROMO TERBATAS!</h1>
+<p>Khusus hari ini, kamu bisa mendapatkan website payment <strong>premium</strong> lengkap dengan fitur otomatis, animasi, efek suara, dan tema RPG hanya dengan harga spesial!</p>
+<p class="latin">"Veni, Vidi, Vendi" — Aku datang, aku lihat, aku jual!</p>
+<p>Jangan lewatkan kesempatan ini. Tersedia slot terbatas untuk reseller aktif dan kreator digital!</p>
+<a class="btn" href="https://wa.me/6288975448402?text=Halo%20saya%20tertarik%20dengan%20promonya" target="_blank">💬 Chat Saya Sekarang</a>
+</div></div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const promoBtn = document.getElementById("promoMenuBtn");
+  const promoPopup = document.getElementById("promoPopup");
+
+  promoBtn.addEventListener("click", function () {
+    const visible = promoPopup.style.display === "block";
+    promoPopup.style.display = visible ? "none" : "block";
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!promoBtn.contains(e.target) && !promoPopup.contains(e.target)) {
+      promoPopup.style.display = "none";
+    }
+  });
+});
+</script>
+</body>
+</html>
